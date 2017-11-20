@@ -1,15 +1,19 @@
 import React from 'react'
-import { Table, Row, Col, Button, Modal } from 'antd';
+import { Table, Row, Col, Button, Modal,Form, Icon, Input } from 'antd';
 import 'antd/dist/antd.css';  //
 import ajax from '../../uitl/ajax'
+import ModalFrom from '../../uitl/ShowModel'
 import { NavLink } from 'react-router-dom'
 const confirm = Modal.confirm
+const FormItem = Form.Item;
 
-class ListView extends React.Component {
+
+class ListViews extends React.Component {
   constructor(props) {
     super(...arguments)
     this.state = {
-      users: []
+      users: [],
+      visible:false
     }
   }
   componentDidMount() {
@@ -23,10 +27,9 @@ class ListView extends React.Component {
         this.setState({users: response})
       }
   })}
-  // 新增
-  handleCreateOrEdit = (data) => {
-    console.log(data)
-    // return Modals.show(<CreateModal data={{third_id: this.props.params.id}} reload={this.refs.table.reload} />, { title: '新增红包配置', okText: '保存'})
+
+  handleAddUser=(info)=>{
+    console.log(info)
   }
   // 删除
   handleDelete = (d) => {
@@ -76,14 +79,14 @@ class ListView extends React.Component {
       )}
   ];
     return (
-      <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
-      <Row style={{margin: 20}}>
-        <Button type="primary" onClick={this.handleCreateOrEdit} >新增</Button>
-      </Row>
-      <Table dataSource={this.state.users} columns={columns} />
+      <div style={{ background: '#fff', padding: 24, minHeight: 280 }}> 
+        <Row>
+          <ModalFrom handleAddUser={this.handleAddUser}/>
+        </Row>
+        <Table dataSource={this.state.users} columns={columns} />
       </div>
     )
   }
 }
-
+const ListView = Form.create()(ListViews)
 export default ListView

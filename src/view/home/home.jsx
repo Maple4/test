@@ -1,6 +1,7 @@
 import React from 'react'
-// import PropTypes from 'prop-types'
-
+import { Modal, Button } from 'antd' 
+import './home.scss'
+import { NavLink } from 'react-router-dom'
 class HomeView extends React.Component {
   constructor(props) {
     super(...arguments)
@@ -10,8 +11,10 @@ class HomeView extends React.Component {
 
   render () {
     return (
-      <div>
-        <h1>Home</h1>
+      <div className='goListBtn'>
+        <Button type="primary" >
+            <NavLink to={'/list'}>跳转至列表</NavLink>
+        </Button>
       </div>
     )
   }
