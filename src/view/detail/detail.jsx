@@ -15,6 +15,7 @@ class DetailsView extends React.Component {
   componentDidMount() {
     this.getuserInfo()
   }
+  /////////////渲染列表
   getuserInfo = () => {
     fetch(`https://www.mxcins.com/api/users `,{ method:'get'})
     .then(response => response.json())
@@ -29,7 +30,7 @@ class DetailsView extends React.Component {
     })
     .catch(e => console.log("Oops, error", e))
   }
-  
+  /////////////////表单验证
   checkName = (rule, value, callback) => {
     if (typeof(value) !=='string') {
       callback('必须是字符串');
@@ -53,6 +54,7 @@ class DetailsView extends React.Component {
     }
     callback();
   }
+  /////////////////确认编辑
   handleSubmit = (e) => {
     e.preventDefault();
     const path ='/list'
@@ -79,6 +81,7 @@ class DetailsView extends React.Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div style={{ background: '#fff', padding: 24, minHeight: 280, fontSize:'25px' }}>
+      //////////////////////表单
       <Form onSubmit={this.handleSubmit} className="login-form">
         <FormItem label="姓名">
             {getFieldDecorator('name', {
