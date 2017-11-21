@@ -1,12 +1,13 @@
 import React from 'react'
-import { Table, Row, Col, Button, Modal,Form, Icon, Input } from 'antd';
+import { Table, Row, Col, Button, Modal,Form, Icon, Input, Alert} from 'antd';
 import 'antd/dist/antd.css';  //
 import ajax from '../../uitl/ajax'
 import ModalFrom from '../../uitl/ShowModel'
 import { NavLink } from 'react-router-dom'
+import 'whatwg-fetch'
 const confirm = Modal.confirm
 const FormItem = Form.Item; 
-
+const url=`https://www.mxcins.com/api/users`
 
 class ListViews extends React.Component {
   constructor(props) {
@@ -22,47 +23,45 @@ class ListViews extends React.Component {
   getUsers = () => {
     ajax({
       method:'get',
-      url:`https://www.mxcins.com/api/users`,
+      url:url,
       callback:(response)=>{
         this.setState({users: response})
       }
   })}
   //////////////新增
   handleAddUser=(info)=>{
-    console.log(info)
-    ajax({
+    fetch(url,{
       method:'post',
-      url:`https://www.mxcins.com/api/users`,
-      params:JSON.stringify(info),
-      callback:(response)=>{
-        console.log(response)
-      }
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(info)
+    }).then(response => response.json())
+    .then(data => {
+      this.getUsers()
     })
   }
   // 删除
   handleDelete = (d) => {
     let self = this
-    console.log(d)
+  
     confirm({
       title: `确认删除吗`,
       maskClosable: true,
       onOk() {
-        ajax({
-          method:'DELETE',
-          url:` https://www.mxcins.com/api/users/${d.id}`,
-          callback:(response)=>{
-            console.log(1)
-            self.getUsers()
-          }})
+        fetch(url+'/'+d.id,{
+          method:'delete',
+        }).then(data => {
+          self.getUsers()
+          const modal = Modal.success({
+            title: '删除成功',
+          });
+          setTimeout(() => modal.destroy(), 1000);
+        })
       }
     });
   }
 
-  handleEdit=(e)=>{
-    if(e.target.innerText=='编辑'){
-      
-    }
-  }
   render () {
     const columns = [{
       title: 'id',

@@ -1,13 +1,11 @@
 import React from 'react'
-import { Form, Input, Button, Checkbox, Modal } from 'antd'
-import ajax from '../../uitl/ajax'
+import { Form, Input, Button, Checkbox, Modal, Icon } from 'antd'
 import './detail.scss'
 import { NavLink } from 'react-router-dom'
-import ModalFrom from '../../uitl/ShowModel'
 const FormItem = Form.Item;
 
 
-class DetailView extends React.Component {
+class DetailsView extends React.Component {
   constructor(props) {
     super(...arguments)
     this.state = {
@@ -15,40 +13,107 @@ class DetailView extends React.Component {
     }
   }
   componentDidMount() {
-    this.getUsers()
+    this.getuserInfo()
   }
-  getUsers = () => {
-    ajax({
-      method:'get',
-      url:` https://www.mxcins.com/api/users`,
-      callback:(response)=>{
-        this.setState({userInfo: response.filter(i => i != this.props.match.params.id)[0]})
+  getuserInfo = () => {
+    fetch(`https://www.mxcins.com/api/users `,{ method:'get'})
+    .then(response => response.json())
+    .then(data => {
+      const userInfo = data.filter(i => i.id == +this.props.match.params.id)[0];
+       // 将props里面的数据初始化给form
+       console.log(userInfo)
+      const { setFieldsValue } = this.props.form;
+        setTimeout(() => {
+          setFieldsValue(userInfo)
+        }, 100)
+    })
+    .catch(e => console.log("Oops, error", e))
+  }
+  
+  checkName = (rule, value, callback) => {
+    if (typeof(value) !=='string') {
+      callback('必须是字符串');
+      return
+    }
+    if (value.length > 50) {
+      callback('长度必须小于50');
+      return
+    }
+    callback();
+  }
+
+  checkEmail = (rule, value, callback) => {
+    if(!value){
+      callback();
+      return
+    }
+    if(value.length > 100) {
+      callback('长度必须小于100');
+      return
+    }
+    callback();
+  }
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const path ='/list'
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        let userId=this.props.match.params.id
+         fetch(`https://www.mxcins.com/api/users/${userId}`,{
+           method:'put',
+           headers:{
+             'Content-Type':'application/json'
+           },
+         body:JSON.stringify(values)
+         }).then(response => response.json())
+         .then(data => {
+           this.getuserInfo()
+           window.location.href='../list'
+         })
       }
-  })}
-  
-  handleEdit = () => {
-      
+    });
   }
-  
+
+
   render () {
+    const { getFieldDecorator } = this.props.form;
     return (
       <div style={{ background: '#fff', padding: 24, minHeight: 280, fontSize:'25px' }}>
-        <label style={{fontSize:'16px'}}>姓名:</label>
-        <Input  className='userInfo'  />
-        <br/>
-        <label style={{fontSize:'16px'}}>邮箱:</label>
-        <Input  className='userInfo' />
-        <br/>
+      <Form onSubmit={this.handleSubmit} className="login-form">
+        <FormItem label="姓名">
+            {getFieldDecorator('name', {
+                rules: [
+                  { required: true, message: '请输入姓名!' },
+                  {
+                    validator: this.checkName,
+                  }
+              ],
+            })(
+                <Input className='userInfo' />
+            )}
+        </FormItem>
+        <FormItem label="邮箱">
+            {getFieldDecorator('email', {
+                rules: [
+                  { required: true, message: '请输入邮箱!' },
+                  {type: 'email', message: '请输入正确的邮箱格式!'},
+                  {validator: this.checkEmail}
+                ],
+            })(
+                <Input className='userInfo' />
+            )}
+        </FormItem>
         <Button 
-              type="primary" 
-              onClick={this.handleEdit}
-              style={{ margin:'19px 0 0 71px' }}
+            type="primary" htmlType="submit"
+            className="login-form-button"
         >
-              确认编辑
+          确认编辑
         </Button>
+      </Form>
       </div>
     )
   }
 }
+const DetailView = Form.create()(DetailsView);
 
 export default DetailView
