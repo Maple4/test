@@ -1,5 +1,6 @@
 import HomeView from 'view/home'
 import List from 'view/list'
+import Detail from 'view/detail'
 export default [
   {
     exact: true,
@@ -12,5 +13,11 @@ export default [
     name: 'list',
     path: '/list',
     component: List,
-  }
+  },
+  {
+    exact: true,
+    name: 'detail',
+    path: '/detail/:id',
+    component: Detail,
+  },
 ]

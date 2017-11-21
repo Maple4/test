@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Modal, Form, Input, Radio } from 'antd';
+import { Button, Modal, Form, Input} from 'antd';
 
 const FormItem = Form.Item;
 const CollectionCreateForm = Form.create()(
@@ -63,7 +63,6 @@ class ModalForm extends Component {
       if (err) {
         return;
       }
-      console.log('Received values of form: ', values);
       form.resetFields();
       this.setState({ visible: false });
       });

@@ -5,7 +5,7 @@ import ajax from '../../uitl/ajax'
 import ModalFrom from '../../uitl/ShowModel'
 import { NavLink } from 'react-router-dom'
 const confirm = Modal.confirm
-const FormItem = Form.Item;
+const FormItem = Form.Item; 
 
 
 class ListViews extends React.Component {
@@ -22,36 +22,46 @@ class ListViews extends React.Component {
   getUsers = () => {
     ajax({
       method:'get',
-      url:` https://www.mxcins.com/api/users`,
+      url:`https://www.mxcins.com/api/users`,
       callback:(response)=>{
         this.setState({users: response})
       }
   })}
-
+  //////////////新增
   handleAddUser=(info)=>{
     console.log(info)
+    ajax({
+      method:'post',
+      url:`https://www.mxcins.com/api/users`,
+      params:JSON.stringify(info),
+      callback:(response)=>{
+        console.log(response)
+      }
+    })
   }
   // 删除
   handleDelete = (d) => {
     let self = this
+    console.log(d)
     confirm({
       title: `确认删除吗`,
       maskClosable: true,
       onOk() {
         ajax({
-          method:'get',
-          url:` https://www.mxcins.com/api/users`,
+          method:'DELETE',
+          url:` https://www.mxcins.com/api/users/${d.id}`,
           callback:(response)=>{
-            // if(data.success){
-              self.getUsers()
-            // }else {
-            //   message.error('保存失败')
-            // }
+            console.log(1)
+            self.getUsers()
           }})
-      },
-      onCancel() {}
+      }
     });
-    
+  }
+
+  handleEdit=(e)=>{
+    if(e.target.innerText=='编辑'){
+      
+    }
   }
   render () {
     const columns = [{
@@ -72,7 +82,7 @@ class ListViews extends React.Component {
       key: 'x',
       render: (indx, d) => (
         <span>
-          <NavLink to={'/detail/' + d.id}>编辑</NavLink>
+          <NavLink to={'/detail/' + d.id} onClick={this.handleEdit}>编辑</NavLink>
           <span className="ant-divider" />
           <a onClick={() => this.handleDelete(d) } style={{color: '#f00'}}>删除</a>
         </span>

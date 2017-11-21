@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { Router } from 'react-router-dom'
 import { renderRoutes, routesMap } from 'routes'
 
 class App extends Component {
